@@ -1,0 +1,9 @@
+//first create a repo in your account
+and copy the url of that repo
+
+//go to project folder
+git init
+git add .
+git commit -m "*message*"
+git add origin "*url*" of repo
+git push origin master
