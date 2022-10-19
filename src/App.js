@@ -1,4 +1,4 @@
-import 'mapbox-gl/dist/mapbox-gl.css'
+
 import "./App.css";
 import { format } from "timeago.js";
 import axios from "axios";
@@ -11,8 +11,7 @@ import Register from './components/Register';
 
 function App() {
   const myStorage=window.localStorage;
-
-  const [country,setCountry] = useState(null);
+  
   const [sub,setSub]=useState(false)
   const [currentUsername, setCurrentUsername] = useState(myStorage.getItem("user"));
   const [pins, setPins] = useState([]);
@@ -38,7 +37,7 @@ function App() {
     console.log(newPin);
     setSub(true)
     try{
-      const res=await axios.post("/api/pins/createpin",newPin);
+      const res=await axios.post("https://mapprojectapp.herokuapp.com/api/pins/createpin",newPin);
       setPins([...pins,res.data]);
       setSub(false);
       setViewport({...viewport, latitude:newPin.lat, long:newPin.long});
@@ -48,6 +47,7 @@ function App() {
       console.log(e);
     }
   }
+  
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
@@ -62,11 +62,7 @@ function App() {
     setViewport({ ...viewport, latitude:lat, longitude:long });
   };
   const handleAddClick=(e)=>{
-    console.log(e);
-    console.log(e.features[0].properties.name_en)
     const [longitude,latitude] = e.lngLat;
-    setCountry(e.features[0].properties.name_en);
-    console.log(country);
     console.log("asdasd",longitude,latitude);
     setNewPlace({
       lat:latitude,
@@ -75,7 +71,7 @@ function App() {
   }
   const deletePin=async(id)=>{
     try{
-    axios.delete(`/api/pins/delete/${id}`);
+    axios.delete(`https://mapprojectapp.herokuapp.com/api/pins/delete/${id}`);
     setPins(pins.filter((pin)=>pin._id!==id));
     }
     catch(err){
@@ -85,7 +81,7 @@ function App() {
   }
   useEffect(() => {
     axios
-      .get("/api/pins/getallpins")
+      .get("https://mapprojectapp.herokuapp.com/api/pins/getallpins")
       .then((obj) => setPins(obj.data))
       .catch((e) => console.log(e));
     setTimeout(() => {
@@ -94,7 +90,8 @@ function App() {
   }, []);
   const handleLogout=()=>{
     setCurrentUsername(null);
-    myStorage.removeItem()
+    myStorage.removeItem("user");
+    setViewport({...viewport,latitude:28.6448,longitude:77.216721,})
   }
   //const API="pk.eyJ1Ijoic2hvdXJqYTE3IiwiYSI6ImNsNHF6ajNlaDByZTgzZW4zMnZkOXB3bzIifQ.CYxZOix2QR3yDvFHLhVq3Q"
   return (
@@ -252,16 +249,18 @@ function App() {
             </>
             )}
             {currentUsername?(
-              <button className="Button Logout" onClick={()=>handleLogout()}>Log out</button>
-            ):(
               <div className="buttons">
-                <button className="Button login" onClick={()=>setShowLogin(true)}>Login</button>
-                <button className="Button register" onClick={()=>setShowRegister(true)}>Register</button>
+                <button className="Button Logout" style={{marginRight:"15px"}} onClick={()=>handleLogout()}>Log out</button>
+              </div>
+            ):(
+              <div className="buttons" >
+                <button className="login" style={{marginRight:"15px"}} onClick={()=>setShowLogin(true)}>Login</button>
+                <button className="register" style={{marginRight:"15px"}} onClick={()=>setShowRegister(true)}>Register</button>
               </div>
 
             )}
             {showRegister&&<Register setShowRegister={setShowRegister}/>}
-            {showLogin&&<Login setShowLogin={setShowLogin} myStorage={myStorage} setCurrentUsername={setCurrentUsername}/>}
+            {showLogin&&<Login setShowLogin={setShowLogin} pins={pins} myStorage={myStorage} setCurrentUsername={setCurrentUsername} viewport={viewport} setViewport={setViewport}/>}
       </ReactMapGL>
     </div>
   );

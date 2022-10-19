@@ -26,3 +26,9 @@ form{
 textarea,input,select{
   border:1px solid black
 }
+.buttons{
+  display:flex;
+  justify-content: flex-end;
+  margin-top:12px;
+
+}
