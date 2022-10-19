@@ -23,7 +23,7 @@ export default function Register({setShowRegister}) {
         setError(false);
         setWait(true);
         try{
-            await axios.post("/api/users/register",User);
+            await axios.post("https://mapprojectapp.herokuapp.com/api/users/register",User);
             setError(false);
             setSuccess(true);
             
