@@ -6,6 +6,7 @@ import "./register.css"
 
 
 export default function Register({setShowRegister}) {
+    const [wait, setWait] = useState(false);
     const [success,setSuccess]=useState(false);
     const [error,setError]=useState(false);
     const usernameRef=useRef();
@@ -18,13 +19,21 @@ export default function Register({setShowRegister}) {
             email:emailRef.current.value,
             pass:passwordRef.current.value,
         };
+        setSuccess(false);
+        setError(false);
+        setWait(true);
         try{
             await axios.post("/api/users/register",User);
             setError(false);
             setSuccess(true);
+            
         }
         catch(e){
-            setError(true);
+          setSuccess(false);
+          setError(true);
+        }
+        finally{
+          setWait(false);
         }
     }
   return (
@@ -34,15 +43,22 @@ export default function Register({setShowRegister}) {
         <span>Zen Maps</span>
       </div>
       <form onSubmit={(e)=>handleSubmit(e)}>
-        <input autofocus placeholder="Enter username" ref={usernameRef}/>
-        <input type="email" placeholder="Enter email" ref={emailRef}/>
-        <input type="password" placeholder="Enter password" ref={passwordRef}/>
+        <label>Username:</label>
+        <input autoFocus style={{marginBottom:"15px"}} placeholder="Enter username" ref={usernameRef}/>
+        <label>Email:</label>
+        <input type="email" style={{marginBottom:"15px"}} placeholder="Enter email" ref={emailRef}/>
+        <label>Password:</label>
+        <input type="password" style={{marginBottom:"15px"}} placeholder="Enter password" ref={passwordRef}/>
+        
         <button className="registerBtn" type="submit">Register</button>
+        {wait&&<span>
+          Please wait....
+        </span>}
         {success&&(
             <span className="success">Success</span>
         )}
         {error&&(
-            <span className="failure">Something went wrong</span>
+            <span className="failure text-danger">Something went wrong</span>
         )}
         <Cancel className="registerCancel" onClick={()=>setShowRegister(false)}/>
       </form>
