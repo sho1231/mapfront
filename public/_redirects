@@ -1,2 +1,2 @@
-/*  /index.html   200
-/api/* https://mapprojectapp.herokuapp.com/:splat 200
+/api/*   https://mapprojectapp.herokuapp.com/    200
+/*    /index.html    200
