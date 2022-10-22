@@ -24,7 +24,7 @@ export default function Login({
     };
     try {
       setWait(true);
-      const res = await axios.post("/api/users/login", User);
+      const res = await axios.post("https://mapbackend123.herokuapp.com/api/users/login", User);
       setCurrentUsername(res.data.username);
       myStorage.setItem("user", res.data.username);
       setWait(false);

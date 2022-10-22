@@ -37,7 +37,7 @@ function App() {
     console.log(newPin);
     setSub(true)
     try{
-      const res=await axios.post("/api/pins/createpin",newPin);
+      const res=await axios.post("https://mapbackend123.herokuapp.com/api/pins/createpin",newPin);
       setPins([...pins,res.data]);
       setSub(false);
       setViewport({...viewport, latitude:newPin.lat, long:newPin.long});
@@ -71,7 +71,7 @@ function App() {
   }
   const deletePin=async(id)=>{
     try{
-    axios.delete(`/api/pins/delete/${id}`);
+    axios.delete(`https://mapbackend123.herokuapp.com/api/pins/delete/${id}`);
     setPins(pins.filter((pin)=>pin._id!==id));
     }
     catch(err){
@@ -81,7 +81,7 @@ function App() {
   }
   useEffect(() => {
     axios
-      .get("/api/pins/getallpins")
+      .get("https://mapbackend123.herokuapp.com/api/pins/getallpins")
       .then((obj) => setPins(obj.data))
       .catch((e) => console.log(e));
     setTimeout(() => {
